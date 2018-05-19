@@ -7,6 +7,17 @@ import store from './store'
 import axios from 'axios'
 import './../node_modules/bulma/css/bulma.css'
 
+import * as VueGoogleMaps from 'vue2-google-maps'
+
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: 'AIzaSyBmAy1PQoMUWZXmOV-AmFrumEwYLl32o4I',
+    libraries: 'places,drawing,visualization',
+    autoBindAllEvents: true,
+    installComponents: true
+  }
+})
+
 axios.defaults.baseURL = 'http://localhost'
 // axios.defaults.headers.common['Authorization'] = 'fasfdsa'
 axios.defaults.headers.get['Accepts'] = 'application/json'
