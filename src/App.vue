@@ -17,7 +17,7 @@ export default {
     Navbar,
     Foot
   },
-  created () {
+  created() {
     this.$store.dispatch('tryAutoLogin')
   }
 }

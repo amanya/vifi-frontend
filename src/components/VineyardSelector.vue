@@ -7,14 +7,12 @@
 <script>
 export default {
   name: 'VineyardSelector',
-  data () {
+  data() {
     return {
       selected: null
     }
   },
-  props: [
-    'vineyards'
-  ]
+  props: ['vineyards']
 }
 </script>
 

@@ -13,7 +13,7 @@ export default new Router({
       path: '/',
       name: 'Login',
       component: Login,
-      beforeEnter (to, from, next) {
+      beforeEnter(to, from, next) {
         if (localStorage.getItem('token')) {
           next('/vineyard')
         } else {
@@ -25,7 +25,7 @@ export default new Router({
       path: '/vineyard',
       name: 'Vineyard',
       component: Vineyard,
-      beforeEnter (to, from, next) {
+      beforeEnter(to, from, next) {
         if (localStorage.getItem('token')) {
           next()
         } else {

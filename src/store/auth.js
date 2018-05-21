@@ -7,23 +7,24 @@ const state = {
 }
 
 const mutations = {
-  authUser (state, userData) {
+  authUser(state, userData) {
     state.idToken = userData.token
   },
-  storeUser (state, user) {
+  storeUser(state, user) {
     state.user = user
   },
-  clearAuthData (state) {
+  clearAuthData(state) {
     state.idToken = null
   }
 }
 
 const actions = {
-  login ({commit, dispatch}, authData) {
-    globalAxios.post('/api/v1/login', {
-      username: authData.email,
-      password: authData.password
-    })
+  login({ commit, dispatch }, authData) {
+    globalAxios
+      .post('/api/v1/login', {
+        username: authData.email,
+        password: authData.password
+      })
       .then(res => {
         localStorage.setItem('token', res.data.jwt)
         commit('authUser', { token: res.data.jwt })
@@ -32,7 +33,7 @@ const actions = {
       })
       .catch(error => console.log(error))
   },
-  tryAutoLogin ({ commit, dispatch }) {
+  tryAutoLogin({ commit, dispatch }) {
     const token = localStorage.getItem('token')
     if (!token) {
       return
@@ -40,19 +41,20 @@ const actions = {
     commit('authUser', { token: token })
     dispatch('fetchUser')
   },
-  logout ({commit}) {
+  logout({ commit }) {
     commit('clearAuthData')
     localStorage.removeItem('token')
     router.replace('/')
   },
-  fetchUser ({commit, state}) {
+  fetchUser({ commit, state }) {
     if (!state.idToken) {
       return
     }
     const authHeader = {
-      'Authorization': 'Bearer ' + state.idToken
+      Authorization: 'Bearer ' + state.idToken
     }
-    globalAxios.get('/api/v1/users', { headers: authHeader })
+    globalAxios
+      .get('/api/v1/users', { headers: authHeader })
       .then(res => {
         const user = res.data
         commit('storeUser', user)
@@ -62,10 +64,10 @@ const actions = {
 }
 
 const getters = {
-  user (state) {
+  user(state) {
     return state.user
   },
-  isAuthenticated (state) {
+  isAuthenticated(state) {
     return state.idToken !== null
   }
 }

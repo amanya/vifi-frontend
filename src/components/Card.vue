@@ -27,5 +27,4 @@
 </template>
 
 <script>
-  name: 'Card'
 </script>

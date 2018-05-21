@@ -34,7 +34,7 @@ import { mapGetters, mapState } from 'vuex'
 
 export default {
   name: 'Navbar',
-  data () {
+  data() {
     return {
       showVineyardsSelect: false
     }
@@ -51,16 +51,16 @@ export default {
       selectedVineyard: state => state.vineyards.selectedVineyard
     }),
     selected: {
-      get: function () {
+      get: function() {
         return this.selectedVineyard
       },
-      set: function (newSelectedVineyard) {
+      set: function(newSelectedVineyard) {
         this.$store.dispatch('setSelectedVineyard', newSelectedVineyard)
       }
     }
   },
   methods: {
-    onLogout () {
+    onLogout() {
       this.$store.dispatch('logout')
     }
   }

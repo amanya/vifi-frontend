@@ -5,7 +5,7 @@
 <script>
 export default {
   name: 'Logout',
-  created () {
+  created() {
     this.$store.dispatch('logout')
     this.$router.push('/')
   }

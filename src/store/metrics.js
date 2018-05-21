@@ -6,47 +6,47 @@ const state = {
 }
 
 const getters = {
-  getMetricsByLayer: state => (magnitudes) => {
+  getMetricsByLayer: state => magnitudes => {
     if (state.metrics) {
       const ids = magnitudes.map((magnitude, idx) => magnitude.id)
-      return state.metrics
-        .filter(metric => metric.magnitude_id.indexOf(ids) >= 0)
+      return state.metrics.filter(metric => metric.magnitude_id.indexOf(ids) >= 0)
     }
   }
 }
 
 const mutations = {
-  metricsFetch (state, sensorId, magnitudeId, metrics) {
+  metricsFetch(state, sensorId, magnitudeId, metrics) {
     if (!metrics) {
       return
     }
     const parsedMetrics = []
-    metrics.forEach(function (metric) {
-      parsedMetrics.push({'timestamp': metric.timestamp, 'value': metric.value})
+    metrics.forEach(function(metric) {
+      parsedMetrics.push({ timestamp: metric.timestamp, value: metric.value })
     })
     state.metrics[magnitudeId] = parsedMetrics
     state.selectedmagnitudes[sensorId][magnitudeId]['Surface'] = true
     state.selectedmagnitudes[sensorId][magnitudeId]['Depth 1'] = true
     state.selectedmagnitudes[sensorId][magnitudeId]['Depth 2'] = true
   },
-  updateSelectedMagnitudes (state, sensorId, layer, selected) {
+  updateSelectedMagnitudes(state, sensorId, layer, selected) {
     this.selectedMagnitudes[sensorId][layer] = selected
   }
 }
 
 const actions = {
-  metricsLoad ({ commit, dispatch }, urls) {
+  metricsLoad({ commit, dispatch }, urls) {
     const authHeader = {
-      'Authorization': 'Bearer ' + localStorage.getItem('token')
+      Authorization: 'Bearer ' + localStorage.getItem('token')
     }
-    urls.forEach(function (metricsUrl) {
-      globalAxios.get(metricsUrl.url, { headers: authHeader })
+    urls.forEach(function(metricsUrl) {
+      globalAxios
+        .get(metricsUrl.url, { headers: authHeader })
         .then(response => response.data)
         .then(data => {
           commit('metricsFetch', {
-            'sensorId': metricsUrl.sensorId,
-            'magnitudId': metricsUrl.magnitudeId,
-            'metrics': data.metrics
+            sensorId: metricsUrl.sensorId,
+            magnitudId: metricsUrl.magnitudeId,
+            metrics: data.metrics
           })
         })
         .catch(error => {

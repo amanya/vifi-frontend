@@ -5,7 +5,7 @@ const state = {
 }
 
 const mutations = {
-  sensorsFetch (state, sensors) {
+  sensorsFetch(state, sensors) {
     state.sensors.concat(state.sensors, sensors)
   }
 }
@@ -23,11 +23,12 @@ const getters = {
 }
 
 const actions = {
-  sensorsLoad ({ commit, dispatch }, url) {
+  sensorsLoad({ commit, dispatch }, url) {
     const authHeader = {
-      'Authorization': 'Bearer ' + localStorage.getItem('token')
+      Authorization: 'Bearer ' + localStorage.getItem('token')
     }
-    globalAxios.get(url, { headers: authHeader })
+    globalAxios
+      .get(url, { headers: authHeader })
       .then(response => response.data)
       .then(data => {
         commit('sensorsFetch', data.sensors)

@@ -48,7 +48,7 @@ export default {
   components: {
     FontAwesomeIcon
   },
-  data () {
+  data() {
     return {
       email: '',
       password: '',
@@ -56,16 +56,16 @@ export default {
     }
   },
   computed: {
-    envelopeIcon () {
+    envelopeIcon() {
       return faEnvelope
     },
-    lockIcon () {
+    lockIcon() {
       return faLock
     }
   },
   methods: {
-    login () {
-      this.$store.dispatch('login', {email: this.email, password: this.password})
+    login() {
+      this.$store.dispatch('login', { email: this.email, password: this.password })
     }
   }
 }

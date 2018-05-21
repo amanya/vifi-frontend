@@ -18,28 +18,32 @@ const getters = {
 }
 
 const mutations = {
-  magnitudesFetch (state, magnitudes) {
+  magnitudesFetch(state, magnitudes) {
     state.magnitudes = magnitudes
   }
 }
 
 const actions = {
-  magnitudesLoad ({ commit, dispatch }, urls) {
+  magnitudesLoad({ commit, dispatch }, urls) {
     const authHeader = {
-      'Authorization': 'Bearer ' + localStorage.getItem('token')
+      Authorization: 'Bearer ' + localStorage.getItem('token')
     }
-    urls.forEach(function (magnitudesUrl) {
-      globalAxios.get(magnitudesUrl.url, { headers: authHeader })
+    urls.forEach(function(magnitudesUrl) {
+      globalAxios
+        .get(magnitudesUrl.url, { headers: authHeader })
         .then(response => response.data)
         .then(data => {
           commit('magnitudesFetch', data.magnitudes)
-          dispatch('metricsLoad', data.magnitudes.map(function (magnitude, idx) {
-            return {
-              sensorId: magnitudesUrl.id,
-              magnitudeId: magnitude.id,
-              url: magnitude.metrics_url
-            }
-          }))
+          dispatch(
+            'metricsLoad',
+            data.magnitudes.map(function(magnitude, idx) {
+              return {
+                sensorId: magnitudesUrl.id,
+                magnitudeId: magnitude.id,
+                url: magnitude.metrics_url
+              }
+            })
+          )
         })
         .catch(error => {
           console.log(error)
