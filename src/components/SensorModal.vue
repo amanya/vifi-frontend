@@ -11,25 +11,21 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 export default {
   name: 'SensorModal',
   props: ['sensor'],
-  data () {
+  data() {
     return {
       layers: ['Surface', 'Depth 1', 'Depth 2']
     }
   },
   computed: {
-    ...mapGetters({
-      magnitudesByLayer: 'getMagnitudesByLayer'
-    }),
     selected: {
-      get (layer) {
+      get(layer) {
         return []
         // return this.$store.metrics.selectedMagnitudes[this.sensor.id][layer]
       },
-      set (layer, newState) {
+      set(layer, newState) {
         this.$store.dispatch('updateSelectedMagnitudes', {
           sensorId: this.sensor.id,
           layer: layer,
@@ -40,9 +36,11 @@ export default {
   },
   methods: {
     filterMagnitudes: () => {
-      if (!this.magnitudes) { return [] }
+      if (!this.magnitudes) {
+        return []
+      }
       let selected = []
-      this.magnitudes.forEach(function (magnitude) {
+      this.magnitudes.forEach(function(magnitude) {
         if (magnitude.id === this.sensor.id) {
           selected.push(magnitude)
         }
@@ -50,7 +48,7 @@ export default {
       })
     }
   },
-  updated () {
+  updated() {
     console.log(this.selected)
   }
 }

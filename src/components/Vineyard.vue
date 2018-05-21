@@ -51,10 +51,10 @@ import { gmapApi } from 'vue2-google-maps'
 export default {
   name: 'Vineyard',
   components: {
-    'chart': Chart,
+    chart: Chart,
     'sensor-modal': SensorModal
   },
-  data () {
+  data() {
     return {
       error: '',
       zoom: 17,
@@ -78,23 +78,29 @@ export default {
       activeVineyard: 'getSelectedVineyard'
     }),
     google: gmapApi,
-    markers () { return this.getMarkers() },
-    center () {
+    markers() {
+      return this.getMarkers()
+    },
+    center() {
       if (this.google) {
         let bound = new this.google.maps.LatLngBounds()
         for (let i = 0; i < this.activeVineyard.sensors.length; i++) {
-          bound.extend(new this.google.maps.LatLng(this.activeVineyard.sensors[i].latitude,
-            this.activeVineyard.sensors[i].longitude))
+          bound.extend(
+            new this.google.maps.LatLng(
+              this.activeVineyard.sensors[i].latitude,
+              this.activeVineyard.sensors[i].longitude
+            )
+          )
         }
         return bound.getCenter()
       }
     },
-    enabledMagnitudesByType () {
+    enabledMagnitudesByType() {
       if (this.activeVineyard.sensors) {
         const sensors = this.activeVineyard.sensors
         let magnitudes = []
-        sensors.forEach((sensor) => {
-          sensor.magnitudes.forEach((magnitude) => {
+        sensors.forEach(sensor => {
+          sensor.magnitudes.forEach(magnitude => {
             magnitudes.push({
               type: magnitude.type,
               id: magnitude.id
@@ -106,19 +112,22 @@ export default {
     }
   },
   methods: {
-    getMarkers () {
+    getMarkers() {
       let markers = []
       if (this.google && this.activeVineyard.sensors) {
         for (let i = 0; i < this.activeVineyard.sensors.length; i++) {
           markers.push({
-            position: new this.google.maps.LatLng(this.activeVineyard.sensors[i].latitude, this.activeVineyard.sensors[i].longitude),
+            position: new this.google.maps.LatLng(
+              this.activeVineyard.sensors[i].latitude,
+              this.activeVineyard.sensors[i].longitude
+            ),
             infoText: this.activeVineyard.sensors[i].description
           })
         }
       }
       return markers
     },
-    toggleInfoWindow: function (marker, idx) {
+    toggleInfoWindow: function(marker, idx) {
       this.infoWindowPos = marker.position
       this.infoContent = marker.infoText
 
@@ -130,7 +139,7 @@ export default {
       }
     }
   },
-  created () {
+  created() {
     this.$store.dispatch('vineyardsLoad')
   }
 }

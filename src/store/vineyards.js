@@ -16,21 +16,22 @@ const getters = {
 }
 
 const mutations = {
-  vineyardsFetch (state, vineyards) {
+  vineyardsFetch(state, vineyards) {
     state.vineyards = vineyards
     state.selectedVineyard = vineyards[0]
   },
-  setSelectedVineyard (state, selectedVineyard) {
+  setSelectedVineyard(state, selectedVineyard) {
     state.selectedVineyard = selectedVineyard
   }
 }
 
 const actions = {
-  vineyardsLoad ({ commit, dispatch }) {
+  vineyardsLoad({ commit, dispatch }) {
     const authHeader = {
-      'Authorization': 'Bearer ' + localStorage.getItem('token')
+      Authorization: 'Bearer ' + localStorage.getItem('token')
     }
-    globalAxios.get('/api/v1/vineyards/', { headers: authHeader })
+    globalAxios
+      .get('/api/v1/vineyards/', { headers: authHeader })
       .then(response => response.data)
       .then(data => {
         commit('vineyardsFetch', data.vineyards)
@@ -40,7 +41,7 @@ const actions = {
         commit('clearAuthData')
       })
   },
-  setSelectedVineyard ({ commit, dispatch }, selectedVineyard) {
+  setSelectedVineyard({ commit, dispatch }, selectedVineyard) {
     commit('setSelectedVineyard', selectedVineyard)
     // dispatch('sensorsLoad', selectedVineyard.sensors_url)
   }

@@ -6,40 +6,47 @@ export default {
   name: 'Chart',
   extends: Line,
   props: ['magnitudes'],
-  data () {
+  data() {
     return {
       collectedMetrics: {}
     }
   },
   computed: {
-    labels () {
-      console.log(this.collectedMetrics)
+    labels() {
       if (this.collectedMetrics['Temperature']) {
-        const labels = this.collectedMetrics['Temperature'].map(function (metric, idx) {
+        const labels = this.collectedMetrics['Temperature'].map(function(metric, idx) {
           return Date.parse(metric.timestamp)
         })
-        console.log(labels)
         return labels
       }
     },
-    temperatureData () {
+    temperatureData() {
       if (!this.collectedMetrics['Temperature']) {
         return []
       }
-      return this.collectedMetrics['Tempeerature'].map(function (metric, idx) {
+      return this.collectedMetrics['Temperature'].map(function(metric, idx) {
+        return metric.value
+      })
+    },
+    humidityData() {
+      if (!this.collectedMetrics['Humidity']) {
+        return []
+      }
+      return this.collectedMetrics['Humidity'].map(function(metric, idx) {
         return metric.value
       })
     }
   },
   methods: {
-    fetchMetrics () {
+    fetchMetrics() {
       const authHeader = {
-        'Authorization': 'Bearer ' + localStorage.getItem('token')
+        Authorization: 'Bearer ' + localStorage.getItem('token')
       }
       const proms = this.magnitudes.map((m, idx) => {
-        globalAxios.get(
-          '/api/v1/magnitudes/' + m.id + '/metrics/',
-          { headers: authHeader })
+        return globalAxios
+          .get('/api/v1/magnitudes/' + m.id + '/metrics/', {
+            headers: authHeader
+          })
           .then(response => response.data)
           .then(data => {
             if (!this.collectedMetrics.hasOwnProperty(m.type)) {
@@ -54,26 +61,41 @@ export default {
       return Promise.all(proms)
     }
   },
-  mounted () {
-    this.fetchMetrics().then(() => {
-      console.log('pepe')
-      const gradient = this.$refs.canvas
-        .getContext('2d')
-        .createLinearGradient(0, 0, 0, 450)
-      gradient.addColorStop(0, 'rgba(255, 0,0, 0.5)')
-      gradient.addColorStop(0.5, 'rgba(255, 0, 0, 0.25)')
-      gradient.addColorStop(1, 'rgba(255, 0, 0, 0)')
+  mounted() {
+    this.fetchMetrics()
+      .then(() => {
+        const tempGradient = this.$refs.canvas.getContext('2d').createLinearGradient(0, 0, 0, 450)
+        tempGradient.addColorStop(0, 'rgba(255, 0,0, 0.5)')
+        tempGradient.addColorStop(0.5, 'rgba(255, 0, 0, 0.25)')
+        tempGradient.addColorStop(1, 'rgba(255, 0, 0, 0)')
 
-      this.renderChart({
-        labels: this.labels,
-        datasets: [{
-          label: 'Temperature',
-          backgroundColor: gradient,
-          data: this.temperatureData
-        }]
-      }, { responsive: true, maintainAspectRatio: false }
-      )
-    })
+        const humGradient = this.$refs.canvas.getContext('2d').createLinearGradient(0, 0, 0, 450)
+        humGradient.addColorStop(0, 'rgba(0, 0, 255, 0.5)')
+        humGradient.addColorStop(0.5, 'rgba(0, 0, 255, 0.25)')
+        humGradient.addColorStop(1, 'rgba(0, 0, 255, 0)')
+
+        this.renderChart(
+          {
+            labels: this.labels,
+            datasets: [
+              {
+                label: 'Temperature',
+                backgroundColor: tempGradient,
+                data: this.temperatureData
+              },
+              {
+                label: 'Humidity',
+                backgroundColor: humGradient,
+                data: this.humidityData
+              }
+            ]
+          },
+          { responsive: true, maintainAspectRatio: false }
+        )
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 }
 </script>
