@@ -35,7 +35,6 @@ const actions = {
       .then(response => response.data)
       .then(data => {
         commit('vineyardsFetch', data.vineyards)
-        dispatch('setSelectedVineyard', data.vineyards[0])
       })
       .catch(_ => {
         commit('clearAuthData')

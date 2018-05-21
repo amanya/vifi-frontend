@@ -13,7 +13,7 @@
     <div class="column">
 
       <GmapMap
-         v-if="google && activeVineyard"
+         v-if="google && selectedVineyard"
          :center="center"
          :zoom="17"
          map-type-id="satellite"
@@ -21,7 +21,13 @@
       >
 
       <gmap-info-window :options="infoOptions" :position="infoWindowPos" :opened="infoWinOpen" @closeclick="infoWinOpen=false">
-        <sensor-modal v-bind:sensor="activeVineyard.sensors[0]" />
+        <sensor-modal
+          v-if="selectedVineyard.sensors"
+          v-for="sensor in selectedVineyard.sensors"
+          :key="sensor.id"
+          @sensorModalUpdated='chartUpdated'
+          :sensor="sensor"
+          :sensorState="sensorState.filter(ss => ss.id === sensor.id)"/>
       </gmap-info-window>
 
         <GmapMarker
@@ -56,6 +62,8 @@ export default {
   },
   data() {
     return {
+      sensorState: [],
+      selectedVineyard: null,
       error: '',
       zoom: 17,
       vineyard: {},
@@ -74,8 +82,7 @@ export default {
   computed: {
     ...mapGetters({
       currentUser: 'currentUser',
-      vineyards: 'allVineyards',
-      activeVineyard: 'getSelectedVineyard'
+      vineyards: 'allVineyards'
     }),
     google: gmapApi,
     markers() {
@@ -84,11 +91,11 @@ export default {
     center() {
       if (this.google) {
         let bound = new this.google.maps.LatLngBounds()
-        for (let i = 0; i < this.activeVineyard.sensors.length; i++) {
+        for (let i = 0; i < this.selectedVineyard.sensors.length; i++) {
           bound.extend(
             new this.google.maps.LatLng(
-              this.activeVineyard.sensors[i].latitude,
-              this.activeVineyard.sensors[i].longitude
+              this.selectedVineyard.sensors[i].latitude,
+              this.selectedVineyard.sensors[i].longitude
             )
           )
         }
@@ -96,8 +103,8 @@ export default {
       }
     },
     enabledMagnitudesByType() {
-      if (this.activeVineyard.sensors) {
-        const sensors = this.activeVineyard.sensors
+      if (this.selectedVineyard.sensors) {
+        const sensors = this.selectedVineyard.sensors
         let magnitudes = []
         sensors.forEach(sensor => {
           sensor.magnitudes.forEach(magnitude => {
@@ -112,16 +119,19 @@ export default {
     }
   },
   methods: {
+    chartUpdated(event) {
+      console.log(event)
+    },
     getMarkers() {
       let markers = []
-      if (this.google && this.activeVineyard.sensors) {
-        for (let i = 0; i < this.activeVineyard.sensors.length; i++) {
+      if (this.google && this.selectedVineyard.sensors) {
+        for (let i = 0; i < this.selectedVineyard.sensors.length; i++) {
           markers.push({
             position: new this.google.maps.LatLng(
-              this.activeVineyard.sensors[i].latitude,
-              this.activeVineyard.sensors[i].longitude
+              this.selectedVineyard.sensors[i].latitude,
+              this.selectedVineyard.sensors[i].longitude
             ),
-            infoText: this.activeVineyard.sensors[i].description
+            infoText: this.selectedVineyard.sensors[i].description
           })
         }
       }
@@ -140,7 +150,21 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('vineyardsLoad')
+    this.$store
+      .dispatch('vineyardsLoad')
+      .then(() => {
+        this.selectedVineyard = this.vineyards[0]
+        console.log(this.selectedVineyard)
+      })
+      .then(() => {
+        this.sensorState = this.selectedVineyard.sensors.map((sensor, _) => {
+          let layers = { id: sensor.id }
+          sensor.magnitudes.forEach(magnitude => {
+            layers[magnitude.layer] = true
+          })
+          return layers
+        })
+      })
   }
 }
 </script>
