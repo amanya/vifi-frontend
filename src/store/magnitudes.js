@@ -1,12 +1,25 @@
 import globalAxios from 'axios'
 
 const state = {
-  magnitudes: {}
+  magnitudes: []
+}
+
+const getters = {
+  getMagnitudesByLayer: state => (sensorId, layer) => {
+    if (state.magnitudes) {
+      return state.magnitudes
+        .filter(magnitude => magnitude.sensor_id === sensorId)
+        .filter(magnitude => magnitude.layer === layer)
+    }
+  },
+  getMagnitudesByType: state => type => {
+    if (state.magnitudes) return state.magnitudes.filter(magnitude => magnitude.type === type)
+  }
 }
 
 const mutations = {
   magnitudesFetch (state, magnitudes) {
-    state.magnitudes[magnitudes.id] = magnitudes.magnitudes
+    state.magnitudes = magnitudes
   }
 }
 
@@ -19,9 +32,13 @@ const actions = {
       globalAxios.get(magnitudesUrl.url, { headers: authHeader })
         .then(response => response.data)
         .then(data => {
-          commit('magnitudesFetch', { 'id': magnitudesUrl.id, 'magnitudes': data.magnitudes })
+          commit('magnitudesFetch', data.magnitudes)
           dispatch('metricsLoad', data.magnitudes.map(function (magnitude, idx) {
-            return {'id': magnitude.id, 'url': magnitude.metrics_url}
+            return {
+              sensorId: magnitudesUrl.id,
+              magnitudeId: magnitude.id,
+              url: magnitude.metrics_url
+            }
           }))
         })
         .catch(error => {
@@ -34,6 +51,7 @@ const actions = {
 
 export default {
   state,
+  getters,
   mutations,
   actions
 }

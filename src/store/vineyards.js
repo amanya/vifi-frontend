@@ -8,15 +8,17 @@ const state = {
 const getters = {
   allVineyards: state => state.vineyards,
   vineyardsLoaded: state => state.vineyards.length > 0,
-  getSelectedVineyard: state => state.selectedVineyard
+  getSelectedVineyard: state => {
+    if (state.selectedVineyard) {
+      return state.selectedVineyard
+    }
+  }
 }
 
 const mutations = {
   vineyardsFetch (state, vineyards) {
     state.vineyards = vineyards
-    if (vineyards) {
-      state.selectedVineyard = vineyards[0]
-    }
+    state.selectedVineyard = vineyards[0]
   },
   setSelectedVineyard (state, selectedVineyard) {
     state.selectedVineyard = selectedVineyard
@@ -40,7 +42,7 @@ const actions = {
   },
   setSelectedVineyard ({ commit, dispatch }, selectedVineyard) {
     commit('setSelectedVineyard', selectedVineyard)
-    dispatch('sensorsLoad', selectedVineyard.sensors_url)
+    // dispatch('sensorsLoad', selectedVineyard.sensors_url)
   }
 }
 

@@ -6,7 +6,19 @@ const state = {
 
 const mutations = {
   sensorsFetch (state, sensors) {
-    state.sensors = sensors
+    state.sensors.concat(state.sensors, sensors)
+  }
+}
+
+const getters = {
+  getMetricsByLayerAndType: state => (sensorId, layer, type) => {
+    if (state.sensors) {
+      const sensor = state.sensors.filter(sensor => sensor.id === sensorId)
+      const magnitudes = sensor.magnitudes
+        .filter(magnitude => magnitude.layer === layer)
+        .filter(magnitude => magnitude.type === type)
+      return magnitudes
+    }
   }
 }
 
@@ -19,9 +31,6 @@ const actions = {
       .then(response => response.data)
       .then(data => {
         commit('sensorsFetch', data.sensors)
-        dispatch('magnitudesLoad', data.sensors.map(function (sensor, idx) {
-          return {'id': sensor.id, 'url': sensor.magnitudes_url}
-        }))
       })
       .catch(error => {
         console.log(error)
@@ -32,6 +41,7 @@ const actions = {
 
 export default {
   state,
+  getters,
   mutations,
   actions
 }
