@@ -11,22 +11,29 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'SensorModal',
-  props: ['sensor', 'sensorState'],
+  props: ['sensor'],
   data() {
     return {
-      layers: ['Surface', 'Depth 1', 'Depth 2'],
-      selectedLayers: {
-        Surface: true,
-        'Depth 1': true,
-        'Depth 2': true
-      }
+      selectedLayers: []
     }
   },
+  computed: {
+    ...mapState({
+      sensorsState: state => state.vineyards.sensorsState
+    }),
+    layers() {
+      return Object.keys(this.selectedLayers).filter(key => key !== 'id')
+    }
+  },
+  created() {
+    this.selectedLayers = this.sensorsState.filter(ss => ss.id === this.sensor.id)[0]
+  },
   updated() {
-    console.log(this.sensorState)
-    this.$emit('sensorModalUpdated', this.sensor.id)
+    this.$store.dispatch('updateSensorState', this.selectedLayers)
   }
 }
 </script>

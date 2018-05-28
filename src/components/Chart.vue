@@ -1,4 +1,5 @@
 <script>
+import Vue from 'vue'
 import globalAxios from 'axios'
 import { Line } from 'vue-chartjs'
 
@@ -50,7 +51,8 @@ export default {
           .then(response => response.data)
           .then(data => {
             if (!this.collectedMetrics.hasOwnProperty(m.type)) {
-              this.collectedMetrics[m.type] = []
+              Vue.set(this.collectedMetrics, m.type, [])
+              // this.collectedMetrics[m.type] = []
             }
             this.collectedMetrics[m.type] = this.collectedMetrics[m.type].concat(data.metrics)
           })
@@ -59,43 +61,55 @@ export default {
           })
       })
       return Promise.all(proms)
+    },
+    drawGraph() {
+      this.collectedMetrics = []
+      this.fetchMetrics()
+        .then(() => {
+          const tempGradient = this.$refs.canvas.getContext('2d').createLinearGradient(0, 0, 0, 450)
+          tempGradient.addColorStop(0, 'rgba(255, 0,0, 0.5)')
+          tempGradient.addColorStop(0.5, 'rgba(255, 0, 0, 0.25)')
+          tempGradient.addColorStop(1, 'rgba(255, 0, 0, 0)')
+
+          const humGradient = this.$refs.canvas.getContext('2d').createLinearGradient(0, 0, 0, 450)
+          humGradient.addColorStop(0, 'rgba(0, 0, 255, 0.5)')
+          humGradient.addColorStop(0.5, 'rgba(0, 0, 255, 0.25)')
+          humGradient.addColorStop(1, 'rgba(0, 0, 255, 0)')
+
+          this.renderChart(
+            {
+              labels: this.labels,
+              datasets: [
+                {
+                  label: 'Temperature',
+                  backgroundColor: tempGradient,
+                  data: this.temperatureData
+                },
+                {
+                  label: 'Humidity',
+                  backgroundColor: humGradient,
+                  data: this.humidityData
+                }
+              ]
+            },
+            { responsive: true, maintainAspectRatio: false }
+          )
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+  },
+  watch: {
+    magnitudes: function(val) {
+      this.drawGraph()
+    },
+    collectedMetrics: function(val) {
+      console.log(this.collectedMetrics)
     }
   },
   mounted() {
-    this.fetchMetrics()
-      .then(() => {
-        const tempGradient = this.$refs.canvas.getContext('2d').createLinearGradient(0, 0, 0, 450)
-        tempGradient.addColorStop(0, 'rgba(255, 0,0, 0.5)')
-        tempGradient.addColorStop(0.5, 'rgba(255, 0, 0, 0.25)')
-        tempGradient.addColorStop(1, 'rgba(255, 0, 0, 0)')
-
-        const humGradient = this.$refs.canvas.getContext('2d').createLinearGradient(0, 0, 0, 450)
-        humGradient.addColorStop(0, 'rgba(0, 0, 255, 0.5)')
-        humGradient.addColorStop(0.5, 'rgba(0, 0, 255, 0.25)')
-        humGradient.addColorStop(1, 'rgba(0, 0, 255, 0)')
-
-        this.renderChart(
-          {
-            labels: this.labels,
-            datasets: [
-              {
-                label: 'Temperature',
-                backgroundColor: tempGradient,
-                data: this.temperatureData
-              },
-              {
-                label: 'Humidity',
-                backgroundColor: humGradient,
-                data: this.humidityData
-              }
-            ]
-          },
-          { responsive: true, maintainAspectRatio: false }
-        )
-      })
-      .catch(error => {
-        console.log(error)
-      })
+    this.drawGraph()
   }
 }
 </script>
