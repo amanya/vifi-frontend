@@ -2,13 +2,14 @@ import globalAxios from 'axios'
 
 export default {
   state: {
+    loading: false,
+    error: false,
+    loaded: false,
     vineyards: [],
     selectedVineyard: {},
     sensorsState: []
   },
   getters: {
-    allVineyards: state => state.vineyards,
-    vineyardsLoaded: state => state.vineyards.length > 0,
     getSelectedVineyard: state => {
       if (state.selectedVineyard) {
         return state.selectedVineyard
@@ -16,8 +17,24 @@ export default {
     }
   },
   mutations: {
-    vineyardsFetch(state, vineyards) {
+    vineyardsFetchStart(state) {
+      state.loading = true
+      state.error = false
+      state.vineyard = []
+      state.loaded = false
+    },
+    vineyardsFetchSuccess(state, vineyards) {
+      console.log(vineyards)
+      state.loading = false
+      state.error = false
       state.vineyards = vineyards
+      state.loaded = true
+    },
+    vineyardsFetchError(state) {
+      state.loading = false
+      state.error = true
+      state.vneyards = []
+      state.loaded = false
     },
     setSelectedVineyard(state, selectedVineyard) {
       state.selectedVineyard = selectedVineyard
@@ -27,22 +44,20 @@ export default {
     }
   },
   actions: {
-    vineyardsLoad({ commit, dispatch }) {
-      return new Promise((resolve, reject) => {
-        const authHeader = {
-          Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
-        globalAxios.get('/api/v1/vineyards/', { headers: authHeader }).then(
-          response => {
-            commit('vineyardsFetch', response.data.vineyards)
-            resolve(response.data.vineyards)
-          },
-          error => {
-            commit('clearAuthData')
-            reject(error)
-          }
-        )
-      })
+    loadVineyards({ commit, dispatch }) {
+      commit('vineyardsFetchStart')
+      const authHeader = {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
+      globalAxios
+        .get('/api/v1/vineyards/', { headers: authHeader })
+        .then(response => response.data)
+        .then(data => commit('vineyardsFetchSuccess', data.vineyards))
+        .catch(error => {
+          console.log(error)
+          commit('vineyardsFetchError')
+          commit('clearAuthData')
+        })
     },
     setSelectedVineyard({ commit, dispatch }) {
       const selectedVineyard = localStorage.getItem('selectedVineyard') || this.state.vineyards.vineyards[0]

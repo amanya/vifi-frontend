@@ -15,6 +15,7 @@ const mutations = {
   },
   clearAuthData(state) {
     state.idToken = null
+    state.user = null
   }
 }
 
@@ -29,19 +30,24 @@ const actions = {
         localStorage.setItem('token', res.data.jwt)
         commit('authUser', { token: res.data.jwt })
         dispatch('fetchUser')
-        router.replace('/vineyard')
       })
+      .then(() => dispatch('loadVineyards'))
+      .then(() => router.replace('/alerts'))
       .catch(error => console.log(error))
   },
   tryAutoLogin({ commit, dispatch }) {
+    console.log('try')
     const token = localStorage.getItem('token')
     if (!token) {
       return
     }
     commit('authUser', { token: token })
-    dispatch('fetchUser')
+    dispatch('fetchUser').then(() => {
+      dispatch('loadVineyards')
+    })
   },
   logout({ commit }) {
+    console.log('logout')
     commit('clearAuthData')
     localStorage.removeItem('token')
     router.replace('/')
@@ -59,7 +65,10 @@ const actions = {
         const user = res.data
         commit('storeUser', user)
       })
-      .catch(error => console.log(error))
+      .catch(error => {
+        console.log(error)
+        router.replace('/')
+      })
   }
 }
 

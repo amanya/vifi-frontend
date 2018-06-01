@@ -2,7 +2,7 @@
   <footer class="footer">
     <div class="container">
       <div class="content has-text-centered">
-        <strong>Vi-Fi</strong>
+        <strong>SenseEarth</strong>
       </div>
     </div>
   </footer>
@@ -14,5 +14,5 @@ export default {
 }
 </script>
 
-<style>
+<style lang="sass">
 </style>

@@ -1,39 +1,60 @@
 <template>
-  <div>
-    <div class="field" v-for="layer in layers" :key="layer">
-      <div class="control">
-        <label class="checkbox">
-          <input type="checkbox" v-model="selectedLayers[layer]" />{{ layer }}
-        </label>
+  <nav class="level">
+    <div class="level-item" v-for="(values, type, index) in layers" :key="index">
+      <div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th colspan="2">{{ type }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(value, layer, index) in values" :key="index">
+            <th>{{ layer }}</th>
+            <td>{{ value }}</td>
+          </tr>
+        </tbody>
+      </table>
       </div>
     </div>
-  </div>
+  </nav>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
+import globalAxios from 'axios'
 export default {
   name: 'SensorModal',
   props: ['sensor'],
   data() {
     return {
-      selectedLayers: []
+      layers: []
     }
   },
-  computed: {
-    ...mapState({
-      sensorsState: state => state.vineyards.sensorsState
-    }),
-    layers() {
-      return Object.keys(this.selectedLayers).filter(key => key !== 'id')
+  methods: {
+    fetchMetrics() {
+      const authHeader = {
+        Authorization: 'Bearer ' + this.$store.state.auth.idToken
+      }
+      globalAxios
+        .get(`/api/v1/sensors/${this.sensor.id}/last-metrics/`, { headers: authHeader })
+        .then(response => response.data)
+        .then(data => {
+          const layers = {}
+          data.forEach(m => {
+            const magnitude = this.sensor.magnitudes.filter(i => i.id === m.magnitude_id)[0]
+            console.log(magnitude)
+            if (!(magnitude.type in layers)) {
+              layers[magnitude.type] = {}
+            }
+            layers[magnitude.type][magnitude.layer] = m.value
+          })
+          console.log(layers)
+          this.layers = layers
+        })
     }
   },
   created() {
-    this.selectedLayers = this.sensorsState.filter(ss => ss.id === this.sensor.id)[0]
-  },
-  updated() {
-    this.$store.dispatch('updateSensorState', this.selectedLayers)
+    this.fetchMetrics()
   }
 }
 </script>

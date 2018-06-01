@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar has-shadow is-spaced" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <a class="navbar-item" href="/">Vineyard-Fidelity</a>
+      <h1 class="title"><a class="navbar-item" href="/">SenseEarth</a></h1>
       <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
@@ -18,7 +18,7 @@
             <a class="navbar-item" href="#" @click="onLogout">Logout</a>
           </div>
         </div>
-        <div v-if="vineyardsLoaded" class="navbar-item">
+        <div v-if="false" class="navbar-item">
           <div class="select">
             <select v-model="selected">
               <option v-for="vineyard in vineyards" :key="vineyard.id" :value=vineyard>{{ vineyard.name }}</option>
@@ -41,10 +41,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      auth: 'isAuthenticated',
-      user: 'user',
-      allVineyards: 'allVineyards',
-      vineyardsLoaded: 'vineyardsLoaded'
+      user: 'user'
     }),
     ...mapState({
       vineyards: state => state.vineyards.vineyards,
@@ -67,5 +64,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="sass">
+.title
+  margin: 0
 </style>

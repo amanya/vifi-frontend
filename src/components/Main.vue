@@ -3,7 +3,7 @@
     <Navbar />
     <div class="columns is-fullheight">
       <div v-if="isAuthenticated" class="column is-2 is-sidebar-menu is-hidden-mobile">
-        <aside v-if="loaded" class="menu">
+        <aside class="menu">
           <ul class="menu-list">
             <li>
               <router-link :to='{ name: "alerts" }' active-class='is-active'>
@@ -54,7 +54,7 @@ import Foot from '@/components/Foot'
 import { mapState, mapGetters } from 'vuex'
 
 export default {
-  name: 'App',
+  name: 'Main',
   components: {
     Navbar,
     Foot
@@ -70,6 +70,9 @@ export default {
   },
   created() {
     this.$store.dispatch('tryAutoLogin')
+    if (!this.loaded) {
+      this.$store.dispatch('loadVineyards')
+    }
   }
 }
 </script>

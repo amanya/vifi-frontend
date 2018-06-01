@@ -22,8 +22,7 @@
 
       <gmap-info-window :options="infoOptions" :position="infoWindowPos" :opened="infoWinOpen" @closeclick="infoWinOpen=false">
         <sensor-modal
-          v-if="selectedVineyard.sensors"
-          v-for="sensor in selectedVineyard.sensors"
+          v-for="sensor in vineyard.sensors"
           :key="sensor.id"
           :sensor="sensor"/>
       </gmap-info-window>
@@ -107,6 +106,8 @@ export default {
             if (selectedLayers[magnitude.layer]) {
               magnitudes.push({
                 type: magnitude.type,
+                layer: magnitude.layer,
+                sensor_id: magnitude.sensor_id,
                 id: magnitude.id
               })
             }
@@ -143,16 +144,6 @@ export default {
         this.currentMidx = idx
       }
     }
-  },
-  created() {
-    this.$store
-      .dispatch('vineyardsLoad')
-      .then(vineyards => {
-        this.$store.dispatch('setSelectedVineyard')
-      })
-      .then(() => {
-        this.$store.dispatch('setSensorsState')
-      })
   }
 }
 </script>

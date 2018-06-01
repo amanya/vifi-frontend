@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import globalAxios from 'axios'
 import { Line } from 'vue-chartjs'
+import { mapState } from 'vuex'
 
 export default {
   name: 'Chart',
@@ -10,10 +11,20 @@ export default {
   data() {
     return {
       collectedMetrics: {},
-      colors: ['#273B40', '#436871', '#6094A0', '#84B2BE', '#ADCCD3', '#D6E5E9']
+      colors: [
+        'hsl(171, 100%, 41%)',
+        'hsl(204, 86%, 53%)',
+        'hsl(217, 71%, 53%)',
+        'hsl(141, 71%, 48%)',
+        'hsl(48, 100%, 67%)',
+        'hsl(348, 100%, 61%)'
+      ]
     }
   },
   computed: {
+    ...mapState({
+      token: state => state.auth.idToken
+    }),
     labels() {
       if (this.collectedMetrics[0]) {
         const labels = this.collectedMetrics[0].map(function(metric, idx) {
@@ -26,7 +37,7 @@ export default {
   methods: {
     fetchMetrics() {
       const authHeader = {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
+        Authorization: 'Bearer ' + this.token
       }
       const proms = this.magnitudes.map((m, idx) => {
         return globalAxios
@@ -56,6 +67,8 @@ export default {
               label: k,
               fill: false,
               backgroundColor: this.colors[idx],
+              borderColor: this.colors[idx],
+              borderWidth: 1,
               data: this.collectedMetrics[k]
                 .map(metric => {
                   return {
@@ -70,8 +83,6 @@ export default {
                 })
             }
           })
-
-          console.log(datasets)
 
           const data = {
             datasets: datasets
