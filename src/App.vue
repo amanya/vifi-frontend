@@ -44,20 +44,17 @@
         <router-view />
       </div>
     </div>
-    <Foot></Foot>
   </div>
 </template>
 
 <script>
 import Navbar from '@/components/Navbar'
-import Foot from '@/components/Foot'
 import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'App',
   components: {
-    Navbar,
-    Foot
+    Navbar
   },
   computed: {
     ...mapGetters({
@@ -83,9 +80,9 @@ $navbar-height: 3.25rem
 
 .columns
   &.is-fullheight
-    min-height: calc(100vh - ( #{$navbar-height} - .75rem ) )
-    max-height: calc(100vh - ( #{$navbar-height} - .75rem ) )
-    height: calc(100vh - ( #{$navbar-height} - .75rem ) )
+    min-height: calc(100vh - ( #{$navbar-height} - .85rem ) )
+    max-height: calc(100vh - ( #{$navbar-height} - .85rem ) )
+    height: calc(100vh - ( #{$navbar-height} - .85rem ) )
     display: flex
     flex-direction: row
     justify-content: stretch

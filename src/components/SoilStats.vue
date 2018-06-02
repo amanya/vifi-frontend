@@ -4,11 +4,11 @@
       <h1 class="title">{{ vineyard.name }}'s soil stats</h1>
     </header>
     <div class="section">
-      <h2 class="subtitle">Historical soil stats</h2>
+      <h2 class="subtitle is-3">Historical soil stats</h2>
       <chart :magnitudes="magnitudes()" />
     </div>
     <div class="section">
-      <h2 class="subtitle">Current soil stats</h2>
+      <h2 class="subtitle is-3">Current soil stats</h2>
       <vineyard-map :vineyard="vineyard" />
     </div>
   </div>
