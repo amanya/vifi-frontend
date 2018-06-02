@@ -20,7 +20,7 @@ export default {
     vineyardsFetchStart(state) {
       state.loading = true
       state.error = false
-      state.vineyard = []
+      state.vineyards = []
       state.loaded = false
     },
     vineyardsFetchSuccess(state, vineyards) {

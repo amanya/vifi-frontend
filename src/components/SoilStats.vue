@@ -1,5 +1,12 @@
 <template>
   <div>
+    <div class="tabs">
+      <ul>
+        <li class="is-active"><a>Soil stats</a></li>
+        <li><a>Microclimate</a></li>
+        <li><a>Weather</a></li>
+      </ul>
+    </div>
     <header>
       <h1 class="title">{{ vineyard.name }}'s soil stats</h1>
     </header>

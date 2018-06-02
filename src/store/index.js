@@ -3,9 +3,8 @@ import Vuex from 'vuex'
 
 import auth from './auth'
 import vineyards from './vineyards'
-import sensors from './sensors'
-import magnitudes from './magnitudes'
 import metrics from './metrics'
+import alerts from './alerts'
 
 Vue.use(Vuex)
 
@@ -13,8 +12,7 @@ export default new Vuex.Store({
   modules: {
     auth,
     vineyards,
-    sensors,
-    magnitudes,
-    metrics
+    metrics,
+    alerts
   }
 })

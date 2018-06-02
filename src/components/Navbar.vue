@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar has-shadow is-spaced" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <h1 class="title"><a class="navbar-item" href="/">SenseEarth</a></h1>
+      <p class="is-size-4 has-text-weight-bold"><a class="navbar-item" href="/">SenseEarth</a></p>
       <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>

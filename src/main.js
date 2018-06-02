@@ -5,7 +5,8 @@ import App from './App'
 import router from './router'
 import store from './store'
 import axios from 'axios'
-import './../node_modules/bulma/bulma.sass'
+import '../node_modules/bulma/bulma.sass'
+import '../node_modules/bulma-badge/dist/bulma-badge.min.css'
 
 import * as VueGoogleMaps from 'vue2-google-maps'
 
