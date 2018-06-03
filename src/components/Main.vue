@@ -69,6 +69,7 @@ export default {
     })
   },
   created() {
+    console.log('pupa')
     this.$store.dispatch('tryAutoLogin')
     if (!this.loaded) {
       this.$store.dispatch('loadVineyards')

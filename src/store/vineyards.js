@@ -24,7 +24,6 @@ export default {
       state.loaded = false
     },
     vineyardsFetchSuccess(state, vineyards) {
-      console.log(vineyards)
       state.loading = false
       state.error = false
       state.vineyards = vineyards

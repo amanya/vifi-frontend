@@ -9,6 +9,7 @@ import Microclimate from '@/components/Microclimate'
 import Weather from '@/components/Weather'
 import Vineyard from '@/components/Vineyard'
 import Logout from '@/components/Logout'
+import VineyardDefault from '@/components/VineyardDefault'
 
 import store from '../store'
 
@@ -17,7 +18,7 @@ Vue.use(Router)
 function checkAuth(to, from, next) {
   if (!store.getters.isAuthenticated) {
     store.dispatch('tryAutoLogin')
-    next('/')
+    next()
   } else {
     next()
   }
@@ -50,28 +51,35 @@ export default new Router({
       beforeEnter: checkAuth
     },
     {
-      path: '/soil-stats/:id',
-      name: 'soil-stats',
-      component: SoilStats,
-      beforeEnter: checkAuth
-    },
-    {
-      path: '/microclimate',
-      name: 'microclimate',
-      component: Microclimate,
-      beforeEnter: checkAuth
-    },
-    {
-      path: '/weather',
-      name: 'weather',
-      component: Weather,
-      beforeEnter: checkAuth
-    },
-    {
-      path: '/vineyard',
-      name: 'vineyard',
+      path: '/vineyard/:id',
       component: Vineyard,
-      beforeEnter: checkAuth
+      beforeEnter: checkAuth,
+      children: [
+        {
+          path: '',
+          name: 'vineyard',
+          component: VineyardDefault,
+          beforeEnter: checkAuth
+        },
+        {
+          path: 'soil-stats',
+          name: 'soil-stats',
+          component: SoilStats,
+          beforeEnter: checkAuth
+        },
+        {
+          path: 'microclimate',
+          name: 'microclimate',
+          component: Microclimate,
+          beforeEnter: checkAuth
+        },
+        {
+          path: 'weather',
+          name: 'weather',
+          component: Weather,
+          beforeEnter: checkAuth
+        }
+      ]
     },
     {
       path: '/logout',

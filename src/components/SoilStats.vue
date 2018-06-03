@@ -1,26 +1,20 @@
 <template>
   <div>
-    <div class="tabs">
-      <ul>
-        <li class="is-active"><a>Soil stats</a></li>
-        <li><a>Microclimate</a></li>
-        <li><a>Weather</a></li>
-      </ul>
-    </div>
     <header>
       <h1 class="title">{{ vineyard.name }}'s soil stats</h1>
     </header>
-    <div class="section">
-      <h2 class="subtitle is-3">Historical soil stats</h2>
-      <chart :magnitudes="magnitudes()" />
-    </div>
-    <div class="section">
-      <h2 class="subtitle is-3">Current soil stats</h2>
-      <vineyard-map :vineyard="vineyard" />
+    <div>
+      <div class="section">
+        <h2 class="subtitle is-3">Historical soil stats</h2>
+        <chart :magnitudes="magnitudes()" />
+      </div>
+      <div class="section">
+        <h2 class="subtitle is-3">Current soil stats</h2>
+        <vineyard-map :vineyard="vineyard" />
+      </div>
     </div>
   </div>
 </template>
-
 <script>
 import Chart from './HistChart'
 import VineyardMap from './VineyardMap'
@@ -35,14 +29,11 @@ export default {
     ...mapState({
       vineyards: state => state.vineyards.vineyards
     }),
-    id() {
-      return this.$route.params.id
-    },
     vineyard() {
-      return this.vineyards.filter(vineyard => vineyard.id === this.id)[0]
+      return this.vineyards.filter(vineyard => vineyard.id === parseInt(this.$route.params.id))[0]
     },
     sensors() {
-      return this.vineyard.sensors
+      return this.vineyards.filter(vineyard => vineyard.id === parseInt(this.$route.params.id))[0].sensors
     }
   },
   methods: {

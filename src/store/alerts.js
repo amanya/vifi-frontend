@@ -55,6 +55,11 @@ export default {
             })
           )
         })
+        .catch(error => {
+          console.log(error)
+          commit('alertsFetchError')
+          commit('clearAuthData')
+        })
     }
   }
 }

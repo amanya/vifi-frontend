@@ -14,23 +14,13 @@
                 <span v-if="unAckAlerts" class="badge is-badge-danger is-badge-medium" :data-badge="numUnAckAlerts"></span>
               </router-link>
             </li>
-            <li>
-              <router-link :to='{ name: "health-stats" }' active-class='is-active'>
-                Health stats
-              </router-link>
-            </li>
-            <li>
-              <router-link :to='{ name: "weather" }' active-class='is-active'>
-                Weather
-              </router-link>
-            </li>
           </ul>
           <p class="menu-label">
             Vineyards
           </p>
           <ul class="menu-list">
             <li v-for="vineyard in vineyards" :key="vineyard.id">
-              <router-link :to='{ name: "soil-stats", params: { id: vineyard.id } }' active-class='is-active'>
+              <router-link :to='{ name: "vineyard", params: { id: vineyard.id } }' active-class='is-active'>
                 {{ vineyard.name }}
               </router-link>
             </li>
@@ -65,12 +55,11 @@ export default {
     })
   },
   created() {
-    this.$store.dispatch('tryAutoLogin')
     setInterval(
       function() {
         this.$store.dispatch('fetchAlerts')
       }.bind(this),
-      1000
+      10000
     )
   }
 }

@@ -42,13 +42,11 @@ export default {
           const layers = {}
           data.forEach(m => {
             const magnitude = this.sensor.magnitudes.filter(i => i.id === m.magnitude_id)[0]
-            console.log(magnitude)
             if (!(magnitude.type in layers)) {
               layers[magnitude.type] = {}
             }
             layers[magnitude.type][magnitude.layer] = m.value
           })
-          console.log(layers)
           this.layers = layers
         })
     }

@@ -36,7 +36,6 @@ const actions = {
       .catch(error => console.log(error))
   },
   tryAutoLogin({ commit, dispatch }) {
-    console.log('try')
     const token = localStorage.getItem('token')
     if (!token) {
       return
@@ -47,7 +46,6 @@ const actions = {
     })
   },
   logout({ commit }) {
-    console.log('logout')
     commit('clearAuthData')
     localStorage.removeItem('token')
     router.replace('/')
